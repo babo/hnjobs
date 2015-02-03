@@ -53,7 +53,7 @@ def get_collection():
 def main():
     collection = get_collection()
 
-    seen = set([q._key for q in collection.fetchAll()])
+    seen = [q._key for q in collection.fetchAll()]
     for data in get_all(seen=seen):
         jid = str(data['id'])
         try:
