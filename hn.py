@@ -1,21 +1,22 @@
 #!/usr/bin/env python
-import arrow
-from elasticsearch import Elasticsearch
-
-import pyArango.connection
-
 import os
 import json
 import urllib2
+
+import arrow
+
+from elasticsearch import Elasticsearch
+from arango import Arango
+
 
 MAIN_ID = '8980047'
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
 
 def get_all(start_id=None, seen=None):
-    seen = set(seen or [])
-    failed = []
-
     ids = [start_id or MAIN_ID]
+    seen = set(seen or []).difference(ids)
+
+    failed = []
 
     while ids:
         hn_id = ids.pop()
@@ -33,40 +34,33 @@ def get_all(start_id=None, seen=None):
             continue
 
         if 'text' in data:
-            print data
             yield data
 
         if 'kids' in data:
             ids += data['kids']
 
 def get_collection():
-    conn = pyArango.connection.Connection()
-    if 'hn_db' not in conn.databases:
-        conn.createDatabase(name='hn_db')
-    db = conn.databases['hn_db']
+    connection = Arango()
+    if 'hn_db' not in connection.databases['user']:
+        connection.add_database('hn_db')
+    db = connection.database('hn_db')
 
-    if 'jobs' not in db.collections:
-        db.createCollection(name = 'jobs')
-    collection = db.collections['jobs']
-    return collection
+    if 'jobs' not in db.collections['user']:
+        db.add_collection('jobs')
+    return db.collection('jobs')
 
 def main():
     collection = get_collection()
 
-    seen = [q._key for q in collection.fetchAll()]
+    seen = [x['_key'] for x in collection.all()]
     for data in get_all(seen=seen):
         jid = str(data['id'])
-        try:
-            collection.fetchDocument(jid)
-            continue
-        except KeyError:
-            pass
-
-        doc = collection.createDocument({'_key': jid})
-        for k, v in data.items():
-            doc[k] = v
-        doc.save()
-        print jid
+        if not collection.contains(jid):
+            data['_key'] = jid
+            collection.add_document(data)
+            print 'new', jid
+        else:
+            print 'seen', jid
 
 if __name__ == '__main__':
     main()
