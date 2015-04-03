@@ -1,14 +1,14 @@
-var converter = new Showdown.converter(),
+var
 
 Comment = React.createClass({
     render: function () {
-        var rawMarkup = converter.makeHtml(this.props.children.toString());
+        var rawMarkup = this.props.children.toString();
         return (
             <div className='comment'>
-                <h2 className='commentAuthor'>
-                    {this.props.author}
-                </h2>
                 <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+                    <li className='commentAuthor'>
+                        {this.props.author}
+                    </li>
             </div>
         );
     }
@@ -18,7 +18,7 @@ CommentList = React.createClass({
     render: function () {
         var commentNodes = this.props.data.map(function (comment) {
             return (
-                <Comment author={comment.author}>
+                <Comment author={comment.by}>
                     {comment.text}
                 </Comment>
             );
@@ -70,6 +70,15 @@ CommentBox = React.createClass({
             }.bind(this)
         });
     },
+    getInitialState: function () {
+        return {data: []};
+    },
+    componentDidMount: function () {
+        this.loadCommentsFromServer();
+        if (this.props.pollInterval !== undefined) {
+            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        }
+    },
     handleCommentSubmit: function (comment) {
         var comments = this.state.data,
             newComments = comments.concat([comment]);
@@ -87,19 +96,10 @@ CommentBox = React.createClass({
             }.bind(this)
         });
     },
-    getInitialState: function () {
-        return {data: []};
-    },
-    componentDidMount: function () {
-        this.loadCommentsFromServer();
-        if (this.props.pollInterval !== undefined) {
-            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-        }
-    },
     render: function () {
         return (
             <div className='commentBox'>
-                <h1>Comments</h1>
+                <h1>Jobs</h1>
                 <CommentList data={this.state.data} />
                 <CommentForm onCommentSubmit={this.handleCommentSubmit} />
             </div>
@@ -108,6 +108,6 @@ CommentBox = React.createClass({
 });
 
 React.render(
-    <CommentBox url='/comments.json' pollInterval={2000}/>,
+    <CommentBox url='/hnjobs' pollInterval2={2000}/>,
     document.getElementById('content')
 );
