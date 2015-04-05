@@ -1,5 +1,23 @@
 var
 
+DislikeButton = React.createClass({
+    getInitialState: function () {
+        return {liked: true};
+    },
+    handleClick: function () {
+        console.dir(this.props);
+        this.setState({liked: !this.state.liked});
+    },
+    render: function () {
+        var text = this.state.liked ? 'No way' : 'Like';
+        return (
+            <p>
+                <button onClick={this.handleClick} type="button" className="btn btn-sn btn-success">{text}</button>
+            </p>
+        );
+    }
+}),
+
 Comment = React.createClass({
     render: function () {
         var rawMarkup = this.props.children.toString(),
@@ -8,11 +26,16 @@ Comment = React.createClass({
             body = p === -1 ? '' : rawMarkup.substring(p);
         return (
             <div className='comment list-group-item'>
-                <h4 class="list-group-item" dangerouslySetInnerHTML={{__html: title}}></h4>
-                <span dangerouslySetInnerHTML={{__html: body}} />
-                <li className='commentAuthor' >
-                    {this.props.author}
-                </li>
+                <h4 className="list-group-item-heading" dangerouslySetInnerHTML={{__html: title}}></h4>
+                <div className='list-group-item-text'>
+                    <span dangerouslySetInnerHTML={{__html: body}} />
+                    <h5>
+                        <span className='commentAuthor label label-info' >
+                            <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>{this.props.author}</a>
+                        </span>
+                    </h5>
+                    <DislikeButton postid={this.props}/>
+                </div>
             </div>
         );
     }
