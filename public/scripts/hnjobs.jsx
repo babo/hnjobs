@@ -7,12 +7,12 @@ DislikeButton = React.createClass({
         this.setState({data: newComments});
 
     },
-    handleClick: function () {
-        var url=this.props.url + '/hide/' + this.props.id;
+    handleClick: function (tbd) {
+        var url=this.props.url + '/update/' + this.props.id;
 
         $.ajax({
             url: url,
-            type: 'DELETE',
+            type: tbd ? 'DELETE' : 'POST',
             success: function (data) {
                 if (data.success === true) {
                     this.props.hide_cb(this.props.id);
@@ -29,7 +29,8 @@ DislikeButton = React.createClass({
     render: function () {
         return (
             <p>
-                <button onClick={this.handleClick} type="button" className="btn btn-sn btn-success">Hide</button>
+                <button onClick={this.handleClick.bind(this, false)} type="button" className="btn btn-sn btn-success">Like</button>
+                <button onClick={this.handleClick.bind(this, true)} type="button" className="btn btn-sn btn-warning">Hide</button>
             </p>
         );
     }
@@ -47,14 +48,20 @@ Comment = React.createClass({
             return (<p></p>);
         } else {
             var rawMarkup = this.props.children.toString(),
+                when = new Date( this.props.time * 1000),
                 p = rawMarkup.indexOf('<p>'),
                 title = p === -1 ? rawMarkup : rawMarkup.substring(0, p),
                 body = p === -1 ? '' : rawMarkup.substring(p);
             return (
                 <div className='comment list-group-item'>
-                    <span className='label label-info' >
-                        <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>{this.props.author}</a>
-                    </span>
+                    <li role="presentation">
+                        <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>
+                            {when.toLocaleString()}
+                            <span className="badge">
+                                {this.props.author}
+                            </span>
+                        </a>
+                    </li>
                     <h4 className="list-group-item-heading" dangerouslySetInnerHTML={{__html: title}}></h4>
                     <div className='list-group-item-text'>
                         <span dangerouslySetInnerHTML={{__html: body}} />
@@ -71,7 +78,7 @@ CommentList = React.createClass({
         var url = this.props.url,
             commentNodes = this.props.data.map(function (comment) {
             return (
-                <Comment author={comment.by}  key={comment.id} id={comment.id} url={url}>
+                <Comment author={comment.by}  key={comment.id} id={comment.id} time={comment.time} url={url}>
                     {comment.text}
                 </Comment>
             );

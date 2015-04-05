@@ -33,14 +33,21 @@ def comments_handler():
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
-@app.route('/hnjobs/hide/<jobid>', methods=['DELETE'])
+@app.route('/hnjobs/update/<jobid>', methods=['DELETE', 'POST'])
 def hide_a_job_handler(jobid):
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
     table = rethinkdb.table(MAIN_ID)
 
-    rtv = table.get(jobid).update({'cool': 0}).run(c)
-    app.logger.debug('Hide {} {}'.format(jobid, rtv))
-    rtv = {'success': rtv.get('skipped', 1) == 0}
+    success = False
+    if request.method == 'DELETE':
+        rtv = table.get(jobid).update({'cool': 0}).run(c)
+        success = rtv.get('skipped', 1) == 0
+        app.logger.debug('Hide {} {}'.format(jobid, rtv))
+    elif request.method == 'POST':
+        rtv = table.get(jobid).update({'cool': rethinkdb.row['cool'] + 1}).run(c)
+        success = rtv.get('skipped', 1) == 0
+        app.logger.debug('Updated {} {}'.format(jobid, rtv))
+    rtv = {'success': success}
     return Response(json.dumps(rtv), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
 if __name__ == '__main__':
