@@ -35,32 +35,6 @@ CommentList = React.createClass({
     }
 }),
 
-CommentForm = React.createClass({
-    handleSubmit: function (e) {
-            e.preventDefault();
-            var author = React.findDOMNode(this.refs.author).value.trim(),
-                text = React.findDOMNode(this.refs.text).value.trim();
-
-            if (text && author) {
-                this.props.onCommentSubmit({
-                    author: author,
-                    text: text});
-                React.findDOMNode(this.refs.author).value = '';
-                React.findDOMNode(this.refs.text).value = '';
-                React.findDOMNode(this.refs.author).select();
-            }
-    },
-    render: function () {
-        return (
-            <form className='commentForm' onSubmit={this.handleSubmit}>
-                <input type="text" ref="author" placeholder="Your name" />
-                <input type="text" ref="text" placeholder="Say something..." />
-                <input type="submit" value="POST" />
-            </form>
-        );
-    }
-}),
-
 CommentBox = React.createClass({
     loadCommentsFromServer: function () {
         $.ajax({
@@ -105,7 +79,6 @@ CommentBox = React.createClass({
             <div className='commentBox'>
                 <h1>Jobs</h1>
                 <CommentList data={this.state.data} />
-                <CommentForm onCommentSubmit={this.handleCommentSubmit} />
             </div>
         );
     }
