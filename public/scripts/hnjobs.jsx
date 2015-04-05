@@ -2,13 +2,17 @@ var
 
 Comment = React.createClass({
     render: function () {
-        var rawMarkup = this.props.children.toString();
+        var rawMarkup = this.props.children.toString(),
+            p = rawMarkup.indexOf('<p>'),
+            title = p === -1 ? rawMarkup : rawMarkup.substring(0, p),
+            body = p === -1 ? '' : rawMarkup.substring(p);
         return (
-            <div className='comment'>
-                <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
-                    <li className='commentAuthor'>
-                        {this.props.author}
-                    </li>
+            <div className='comment list-group-item'>
+                <h4 class="list-group-item" dangerouslySetInnerHTML={{__html: title}}></h4>
+                <span dangerouslySetInnerHTML={{__html: body}} />
+                <li className='commentAuthor' >
+                    {this.props.author}
+                </li>
             </div>
         );
     }
@@ -18,13 +22,13 @@ CommentList = React.createClass({
     render: function () {
         var commentNodes = this.props.data.map(function (comment) {
             return (
-                <Comment author={comment.by}>
+                <Comment author={comment.by}  key={comment.id}>
                     {comment.text}
                 </Comment>
             );
         });
         return (
-            <div className='commentList'>
+            <div className='commentList list-group'>
                 {commentNodes}
             </div>
         );

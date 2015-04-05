@@ -29,7 +29,7 @@ def comments_handler():
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
     table = rethinkdb.table(MAIN_ID)
 
-    cursor = table.filter({'parent': 9303396, 'type': 'comment'}).filter(lambda x: x['cool'] != 0).with_fields('text', 'by', 'time', 'cool').limit(13).run(c)
+    cursor = table.filter({'parent': 9303396, 'type': 'comment'}).filter(lambda x: x['cool'] != 0).with_fields('text', 'by', 'time', 'cool', 'id').limit(13).run(c)
     jobs = list(cursor)
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
