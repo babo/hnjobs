@@ -1,51 +1,77 @@
 var
 
 DislikeButton = React.createClass({
-    getInitialState: function () {
-        return {liked: true};
+    handleCommentSubmit: function (comment) {
+        var comments = this.state.data,
+            newComments = comments.concat([comment]);
+        this.setState({data: newComments});
+
     },
     handleClick: function () {
-        console.dir(this.props);
-        this.setState({liked: !this.state.liked});
+        var url=this.props.url + '/hide/' + this.props.id;
+
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function (data) {
+                if (data.success === true) {
+                    this.props.hide_cb(this.props.id);
+                } else {
+                    console.error('Failed to hide ' + this.props.id);
+                }
+
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(url, status, err.toString());
+            }.bind(this)
+        });
     },
     render: function () {
-        var text = this.state.liked ? 'No way' : 'Like';
         return (
             <p>
-                <button onClick={this.handleClick} type="button" className="btn btn-sn btn-success">{text}</button>
+                <button onClick={this.handleClick} type="button" className="btn btn-sn btn-success">Hide</button>
             </p>
         );
     }
 }),
 
 Comment = React.createClass({
+    getInitialState: function () {
+        return {liked: true};
+    },
+    hide_cb: function (job_id) {
+        this.setState({liked: !this.state.liked});
+    },
     render: function () {
-        var rawMarkup = this.props.children.toString(),
-            p = rawMarkup.indexOf('<p>'),
-            title = p === -1 ? rawMarkup : rawMarkup.substring(0, p),
-            body = p === -1 ? '' : rawMarkup.substring(p);
-        return (
-            <div className='comment list-group-item'>
-                <h4 className="list-group-item-heading" dangerouslySetInnerHTML={{__html: title}}></h4>
-                <div className='list-group-item-text'>
-                    <span dangerouslySetInnerHTML={{__html: body}} />
-                    <h5>
-                        <span className='commentAuthor label label-info' >
-                            <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>{this.props.author}</a>
-                        </span>
-                    </h5>
-                    <DislikeButton postid={this.props}/>
+        if (!this.state.liked) {
+            return (<p></p>);
+        } else {
+            var rawMarkup = this.props.children.toString(),
+                p = rawMarkup.indexOf('<p>'),
+                title = p === -1 ? rawMarkup : rawMarkup.substring(0, p),
+                body = p === -1 ? '' : rawMarkup.substring(p);
+            return (
+                <div className='comment list-group-item'>
+                    <span className='label label-info' >
+                        <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>{this.props.author}</a>
+                    </span>
+                    <h4 className="list-group-item-heading" dangerouslySetInnerHTML={{__html: title}}></h4>
+                    <div className='list-group-item-text'>
+                        <span dangerouslySetInnerHTML={{__html: body}} />
+                        <DislikeButton id={this.props.id} url={this.props.url} hide_cb={this.hide_cb}/>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
     }
 }),
 
 CommentList = React.createClass({
     render: function () {
-        var commentNodes = this.props.data.map(function (comment) {
+        var url = this.props.url,
+            commentNodes = this.props.data.map(function (comment) {
             return (
-                <Comment author={comment.by}  key={comment.id}>
+                <Comment author={comment.by}  key={comment.id} id={comment.id} url={url}>
                     {comment.text}
                 </Comment>
             );
@@ -84,7 +110,7 @@ CommentBox = React.createClass({
         return (
             <div className='commentBox'>
                 <h1>Jobs</h1>
-                <CommentList data={this.state.data} />
+                <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );
     }

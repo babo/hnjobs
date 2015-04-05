@@ -23,16 +23,25 @@ DB_DATABASE = 'hnjobs'
 app = Flask(__name__, static_url_path='', static_folder='public')
 app.add_url_rule('/', 'root', lambda: app.send_static_file('./index.html'))
 
-@app.route('/hnjobs', methods=['GET', 'POST'])
+@app.route('/hnjobs', methods=['GET'])
 def comments_handler():
-
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
     table = rethinkdb.table(MAIN_ID)
 
-    cursor = table.filter({'parent': 9303396, 'type': 'comment'}).filter(lambda x: x['cool'] != 0).with_fields('text', 'by', 'time', 'cool', 'id').limit(13).run(c)
+    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(lambda x: x['cool'] != 0).with_fields('text', 'by', 'time', 'cool', 'id').limit(13).run(c)
     jobs = list(cursor)
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
+
+@app.route('/hnjobs/hide/<jobid>', methods=['DELETE'])
+def hide_a_job_handler(jobid):
+    c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
+    table = rethinkdb.table(MAIN_ID)
+
+    rtv = table.get(jobid).update({'cool': 0}).run(c)
+    app.logger.debug('Hide {} {}'.format(jobid, rtv))
+    rtv = {'success': rtv.get('skipped', 1) == 0}
+    return Response(json.dumps(rtv), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT",3000)), debug=True)
