@@ -28,10 +28,14 @@ DislikeButton = React.createClass({
     },
     render: function () {
         return (
-            <p>
-                <button onClick={this.handleClick.bind(this, false)} type="button" className="btn btn-sn btn-success">Like</button>
-                <button onClick={this.handleClick.bind(this, true)} type="button" className="btn btn-sn btn-warning">Hide</button>
-            </p>
+            <div className="row">
+                <div className="col-md-1">
+                    <button onClick={this.handleClick.bind(this, false)} type="button" className="btn btn-sn btn-success">Like</button>
+                </div>
+                <div className="col-md-1">
+                    <button onClick={this.handleClick.bind(this, true)} type="button" className="btn btn-sn btn-warning">Hide</button>
+                </div>
+            </div>
         );
     }
 }),
@@ -54,14 +58,19 @@ Comment = React.createClass({
                 body = p === -1 ? '' : rawMarkup.substring(p);
             return (
                 <div className='comment list-group-item'>
-                    <li role="presentation">
-                        <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>
+                    <div className="row">
+                        <div className="col-md-11">
                             {when.toLocaleString()}
-                            <span className="badge">
-                                {this.props.author}
+                        </div>
+                        <div className="col-md-1">
+                            <span className="label label-info">
+                                <a target="_blank" href={"https://news.ycombinator.com/user?id=" + this.props.author}>
+                                    {this.props.author}
+                                </a>
                             </span>
-                        </a>
-                    </li>
+                        </div>
+                    </div>
+
                     <h4 className="list-group-item-heading" dangerouslySetInnerHTML={{__html: title}}></h4>
                     <div className='list-group-item-text'>
                         <span dangerouslySetInnerHTML={{__html: body}} />
