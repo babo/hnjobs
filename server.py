@@ -16,6 +16,7 @@ import rethinkdb
 
 from flask import Flask, Response, request
 
+LIMIT = 700
 MAIN_ID = '9303396' # '9127232' #'8980047'
 DB_HOST = 'localhost'
 DB_PORT = 28015
@@ -37,7 +38,7 @@ def comments_handler():
     else:
         filter_f = lambda x: x['cool'] == 1
 
-    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(filter_f).with_fields('text', 'by', 'time', 'cool', 'id').limit(13).run(c)
+    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(filter_f).with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
     jobs = list(cursor)
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
