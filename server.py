@@ -43,6 +43,24 @@ def comments_handler():
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
+@app.route('/hnjobs/latest', methods=['GET'])
+def latest_handler():
+    c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
+    table = rethinkdb.table(MAIN_ID)
+
+    counters = table.group('cool').count().run(c)
+    rtv = {'url': 'https://news.ycombinator.com/item?id={}'.format(MAIN_ID),
+        'total': table.count().run(c),
+        'date': table.get(MAIN_ID).run(c)['time'],
+        'latest': table.filter({'parent': int(MAIN_ID)}).max('time').run(c)['time'],
+        'liked': counters[2],
+        'disliked': counters[0],
+        'unclassified': counters[1],
+        'total': sum(counters.values())
+    }
+
+    return Response(json.dumps(rtv), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
+
 @app.route('/hnjobs/update/<jobid>', methods=['DELETE', 'POST'])
 def hide_a_job_handler(jobid):
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
