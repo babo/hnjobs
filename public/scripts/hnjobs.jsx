@@ -101,12 +101,13 @@ CommentList = React.createClass({
 }),
 
 CommentBox = React.createClass({
-    loadCommentsFromServer: function () {
+    loadCommentsFromServer: function (navmode) {
         $.ajax({
             url: this.props.url,
             dataType: 'json',
+            data: {navmode: navmode},
             success: function (data) {
-                this.setState({data: data});
+                this.setState({data: data, navmode: navmode});
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -114,17 +115,25 @@ CommentBox = React.createClass({
         });
     },
     getInitialState: function () {
-        return {data: []};
+        return {data: [], navmode: 0};
     },
     componentDidMount: function () {
-        this.loadCommentsFromServer();
-        if (this.props.pollInterval !== undefined) {
-            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        this.loadCommentsFromServer(this.state.navmode);
+    },
+    handleClick: function (which) {
+        if (this.state.navmode !== which && which >= 0 && which < 3) {
+            this.loadCommentsFromServer(which);
         }
     },
     render: function () {
         return (
             <div className='commentBox'>
+                <ul className="nav nav-tabs">
+                    <li role="presentation" className={this.state.navmode === 0 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 0)}>Potential</a></li>
+                    <li role="presentation" className={this.state.navmode === 1 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 1)}>Cool</a></li>
+                    <li role="presentation" className={this.state.navmode === 2 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 2)}>Uncool</a></li>
+                </ul>
+
                 <h1>Jobs</h1>
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
@@ -133,6 +142,6 @@ CommentBox = React.createClass({
 });
 
 React.render(
-    <CommentBox url='/hnjobs' pollInterval2={2000}/>,
+    <CommentBox url='/hnjobs' />,
     document.getElementById('content')
 );
