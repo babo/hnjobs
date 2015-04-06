@@ -16,6 +16,8 @@ The current database is [RethinkDB](http://rethinkdb.com/docs/install/), use the
 
 Backend is written in  python using a minimalistic approach with [flask](http://flask.pocoo.org/). To run it use `setup.sh` to create a [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) with the required packages installed in it.
 
+Frontend is using [ReactJS](https://facebook.github.io/react/), [jquery](http://jquery.com) and [bootstrap](http://getbootstrap.com/) with on the fly [JSX](http://facebook.github.io/jsx/) transformation.
+
 Starting the service
 ---
 
