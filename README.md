@@ -9,10 +9,9 @@ Description
 Installation
 ---
 
-The current database is [RethinkDB](http://rethinkdb.com/docs/install/), use they instructions to install it. On OS X with [brew](http://brew.sh/) it's as easy as
+The current database is [RethinkDB](http://rethinkdb.com/docs/install/), use they instructions to install it. On OS X with [brew](http://brew.sh/) it's as easy as:
 
-    brew update
-    brew install --upgrade rethindb
+    brew update && brew install --upgrade rethindb
 
 Backend is written in  python using a minimalistic approach with [flask](http://flask.pocoo.org/). To run it use `setup.sh` to create a [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/) with the required packages installed in it.
 
@@ -21,7 +20,7 @@ Frontend is using [ReactJS](https://facebook.github.io/react/), [jquery](http://
 Starting the service
 ---
 
-* start your database somewhere with `rethinkdb -d YOUR_PREFERRED_DATABASE_DIRECTORY_NAME`.  
+* start your database somewhere with `rethinkdb -d YOUR_PREFERRED_DATABASE_DIRECTORY_LOCATION`.
 
 * activate the virtualenv with `source ./bootstrap_venv/bin/activate`
 
