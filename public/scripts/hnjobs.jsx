@@ -134,7 +134,7 @@ CommentBox = React.createClass({
                     <li role="presentation" className={this.state.navmode === 2 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 2)}>Uncool</a></li>
                 </ul>
 
-                <h1>Jobs</h1>
+                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=9327840"}>HN Jobs</a></h1>
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );
