@@ -4,11 +4,10 @@ import json
 import urllib2
 
 import arrow
-
 import rethinkdb
 
 
-MAIN_ID = '9303396' # '9127232' #'8980047'
+MAIN_ID = '9471287' # '9303396' # '9127232' #'8980047'
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
 DB_HOST = 'localhost'
 DB_PORT = 28015
