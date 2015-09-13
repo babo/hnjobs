@@ -1,6 +1,8 @@
 *.pyc
 R/
 adc/
+venv/
+v3/
 node_modules/
 .module-cache/
 bootstrap_venv/

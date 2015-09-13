@@ -1,0 +1,7 @@
+name: hnjobs
+
+dependencies:
+    redstone: any
+    rethinkdb_driver: '>= 2.0.0 < 3.0.0'
+    redstone_rethinkdb: any
+    shelf_static: any

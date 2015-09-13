@@ -1,17 +1,37 @@
 #!/usr/bin/env python
 import os
 import json
+import time
 import urllib2
+
+from contextlib import closing
 
 import arrow
 import rethinkdb
 
 
-MAIN_ID = '9471287' # '9303396' # '9127232' #'8980047'
+MAIN_ID = '10152809' # '9996333' # '9639001' # 9471287' # '9303396' # '9127232' #'8980047'
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
 DB_HOST = 'localhost'
 DB_PORT = 28015
 DB_DATABASE = 'hnjobs'
+MAX_RETRIES = 5
+
+class FireBaseException(Exception):
+    pass
+
+def read_comment(hn_id):
+    try:
+        for i in range(MAX_RETRIES + 1):
+            with closing(urllib2.urlopen(TEMPLATE.format(hn_id))) as x:
+                if x.getcode() / 100 == 5 and i < MAX_RETRIES:
+                    time.sleep(0.2 * 2 ** i)
+                elif x.getcode() / 100 == 2:
+                    return json.loads(x.read())
+                else:
+                    raise FireBaseException(x.code)
+    except Exception as error:
+        print hn_id, type(error), error
 
 def get_all(start_id=None, seen=None):
     ids = [start_id or MAIN_ID]
@@ -24,22 +44,21 @@ def get_all(start_id=None, seen=None):
         if hn_id in seen:
             continue
 
+        data = read_comment(hn_id)
         seen.add(hn_id)
-        try:
-            x = urllib2.urlopen(TEMPLATE.format(hn_id))
-            data = json.loads(x.read())
-            x.close()
-        except Exception as error:
-            print hn_id, type(error), error
+
+        if data is None:
             failed.append(hn_id)
-            continue
+        else:
+            if 'text' in data:
+                data['id'] = str(data['id'])
+                yield data
 
-        if 'text' in data:
-            data['id'] = str(data['id'])
-            yield data
+            if 'kids' in data:
+                ids += data['kids']
 
-        if 'kids' in data:
-            ids += data['kids']
+    if failed:
+        print 'Failed', failed
 
 def init_db():
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
