@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-import os
+#!/usr/bin/env python3
 import json
 import time
-import urllib2
 
 from contextlib import closing
+from urllib.request import urlopen
 
-import arrow
 import rethinkdb
 
 
@@ -23,15 +21,15 @@ class FireBaseException(Exception):
 def read_comment(hn_id):
     try:
         for i in range(MAX_RETRIES + 1):
-            with closing(urllib2.urlopen(TEMPLATE.format(hn_id))) as x:
+            with closing(urlopen(TEMPLATE.format(hn_id))) as x:
                 if x.getcode() / 100 == 5 and i < MAX_RETRIES:
                     time.sleep(0.2 * 2 ** i)
                 elif x.getcode() / 100 == 2:
-                    return json.loads(x.read())
+                    return json.loads(x.read().decode('utf-8'))
                 else:
                     raise FireBaseException(x.code)
     except Exception as error:
-        print hn_id, type(error), error
+        print(hn_id, type(error), error)
 
 def get_all(start_id=None, seen=None):
     ids = [start_id or MAIN_ID]
@@ -58,7 +56,7 @@ def get_all(start_id=None, seen=None):
                 ids += data['kids']
 
     if failed:
-        print 'Failed', failed
+        print('Failed', failed)
 
 def init_db():
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
@@ -87,11 +85,11 @@ def main():
             data['cool'] = 1
             x = table.insert(data).run(c)
             if x.get('inserted', 0) != 1:
-                print 'Fail to add {} {}'.format(jid, x)
+                print('Fail to add {} {}'.format(jid, x))
             else:
-                print 'new {}'.format(jid)
+                print('new {}'.format(jid))
         else:
-            print 'seen {}'.format(jid)
+            print('seen {}'.format(jid))
 
 if __name__ == '__main__':
     main()
