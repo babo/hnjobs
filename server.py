@@ -16,8 +16,10 @@ import rethinkdb
 
 from flask import Flask, Response, request
 
+import latest_post
+
+MAIN_ID = latest_post.who_is_hiring_thread()
 LIMIT = 700
-MAIN_ID = '9303396' # '9127232' #'8980047'
 DB_HOST = 'localhost'
 DB_PORT = 28015
 DB_DATABASE = 'hnjobs'
