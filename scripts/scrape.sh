@@ -10,6 +10,6 @@ while : ; do
   sleep 10 # since the script starts at the same time as the db, give rethinkdb
            # a chance to finish loading first
   ./hn.py
-  printf "\x1b[32mFinished latest post grab!\x1b[0m"
+  printf "\x1b[32mFinished latest post grab!\x1b[0m\n"
   sleep 1h
 done
