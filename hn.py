@@ -7,8 +7,9 @@ import arrow
 
 import rethinkdb
 
+import latest_post
 
-MAIN_ID = '9303396' # '9127232' #'8980047'
+MAIN_ID = latest_post.who_is_hiring_thread()
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
 DB_HOST = 'localhost'
 DB_PORT = 28015
@@ -71,9 +72,7 @@ def main():
             if x.get('inserted', 0) != 1:
                 print 'Fail to add {} {}'.format(jid, x)
             else:
-                print 'new {}'.format(jid)
-        else:
-            print 'seen {}'.format(jid)
+                print 'new job post {}'.format(jid)
 
 if __name__ == '__main__':
     main()
