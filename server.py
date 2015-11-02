@@ -40,7 +40,10 @@ def comments_handler():
     else:
         filter_f = lambda x: x['cool'] == 1
 
-    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(filter_f).with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
+    jobfilter = request.args.get('filter', "")
+    filter_q = lambda x: x['text'].match("(?im)"+jobfilter)
+
+    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(filter_f).filter(filter_q).with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
     jobs = list(cursor)
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})

@@ -30,10 +30,10 @@ DislikeButton = React.createClass({
         return (
             <div className="row">
                 <div className="col-md-1">
-                    <button onClick={this.handleClick.bind(this, false)} type="button" className="btn btn-sn btn-success">Like</button>
+                    <button onClick={this.handleClick.bind(null, false)} type="button" className="btn btn-sn btn-success">Like</button>
                 </div>
                 <div className="col-md-1">
-                    <button onClick={this.handleClick.bind(this, true)} type="button" className="btn btn-sn btn-warning">Hide</button>
+                    <button onClick={this.handleClick.bind(null, true)} type="button" className="btn btn-sn btn-warning">Hide</button>
                 </div>
             </div>
         );
@@ -60,7 +60,9 @@ Comment = React.createClass({
                 <div className='comment list-group-item'>
                     <div className="row">
                         <div className="col-md-11">
-                            {when.toLocaleString()}
+                            <a target="_blank" href={"https://news.ycombinator.com/item?id=" + this.props.id}>
+                                {when.toLocaleString()}
+                            </a>
                         </div>
                         <div className="col-md-1">
                             <span className="label label-info">
@@ -101,13 +103,14 @@ CommentList = React.createClass({
 }),
 
 CommentBox = React.createClass({
-    loadCommentsFromServer: function (navmode) {
+    loadCommentsFromServer: function () {
+        var navvy = this.state.navmode;
         $.ajax({
             url: this.props.url,
             dataType: 'json',
-            data: {navmode: navmode},
+            data: {navmode: navvy, filter: this.state.searchFilter},
             success: function (data) {
-                this.setState({data: data, navmode: navmode});
+                this.setState({data: data});
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -115,26 +118,44 @@ CommentBox = React.createClass({
         });
     },
     getInitialState: function () {
-        return {data: [], navmode: 0};
+        return {data: [], navmode: 0, searchFilter: ""};
     },
     componentDidMount: function () {
-        this.loadCommentsFromServer(this.state.navmode);
+        this.loadCommentsFromServer();
     },
     handleClick: function (which) {
-        if (this.state.navmode !== which && which >= 0 && which < 3) {
-            this.loadCommentsFromServer(which);
-        }
+        console.log("navmode will become " + which);
+        this.setState({navmode: which}, this.loadCommentsFromServer);
+    },
+    handleSearch: function (e) {
+        e.preventDefault();
+        var newFilter = e.target.searchBox.value.trim();
+        console.log("searching for jobs that match " + newFilter);
+        this.setState({searchFilter: newFilter}, this.loadCommentsFromServer);
+        return;
     },
     render: function () {
         return (
             <div className='commentBox'>
-                <ul className="nav nav-tabs">
-                    <li role="presentation" className={this.state.navmode === 0 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 0)}>Potential</a></li>
-                    <li role="presentation" className={this.state.navmode === 1 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 1)}>Cool</a></li>
-                    <li role="presentation" className={this.state.navmode === 2 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 2)}>Uncool</a></li>
-                </ul>
+                <div className="commentsNav navbar navbar-default" role="navigation">
+                    <span className="navbar-text">
+                        HN Jobs ({this.state.data.length})
+                    </span>
+                    <ul className="nav navbar-nav">
+                        <li role="presentation" className={this.state.navmode === 0 ? 'active' : ''}><a onClick={this.handleClick.bind(null, 0)}>Potential</a></li>
+                        <li role="presentation" className={this.state.navmode === 1 ? 'active' : ''}><a onClick={this.handleClick.bind(null, 1)}>Cool</a></li>
+                        <li role="presentation" className={this.state.navmode === 2 ? 'active' : ''}><a onClick={this.handleClick.bind(null, 2)}>Uncool</a></li>
+                    </ul>
+                    <form className="navbar-form navbar-right" role="search" onSubmit={this.handleSearch}>
+                        <div className="form-group">
+                            <input type="text" className="form-control" placeholder="Filter" name="searchBox" title="Filter jobs, regex supported" />
+                        </div>
+                        <button type="submit" className="btn btn-default" aria-label="Search">
+                            <span className="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </form>
+                </div>
 
-                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=9327840"}>HN Jobs</a></h1>
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );

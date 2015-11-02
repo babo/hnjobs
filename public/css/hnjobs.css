@@ -1,0 +1,11 @@
+.comment {
+  margin-bottom: 1em;
+}
+
+.commentsNav .nav a,
+.commentsNav .nav a:hover {
+  cursor: pointer;
+}
+.commentsNav .nav a:hover {
+  text-decoration: underline;
+}
