@@ -4,3 +4,4 @@ adc/
 node_modules/
 .module-cache/
 bootstrap_venv/
+db/
