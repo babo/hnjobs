@@ -6,3 +6,4 @@ v3/
 node_modules/
 .module-cache/
 bootstrap_venv/
+.DS_Store
