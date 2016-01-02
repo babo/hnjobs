@@ -121,7 +121,7 @@ CommentBox = React.createClass({
         this.loadCommentsFromServer(this.state.navmode);
     },
     handleClick: function (which) {
-        if (this.state.navmode !== which && which >= 0 && which < 3) {
+        if (this.state.navmode !== which && which >= 0 && which < 4) {
             this.loadCommentsFromServer(which);
         }
     },
@@ -132,6 +132,7 @@ CommentBox = React.createClass({
                     <li role="presentation" className={this.state.navmode === 0 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 0)}>Potential</a></li>
                     <li role="presentation" className={this.state.navmode === 1 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 1)}>Cool</a></li>
                     <li role="presentation" className={this.state.navmode === 2 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 2)}>Uncool</a></li>
+                    <li role="presentation" className={this.state.navmode === 3 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 3)}>Remote</a></li>
                 </ul>
 
                 <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=9327840"}>HN Jobs</a></h1>

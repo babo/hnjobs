@@ -37,6 +37,8 @@ def comments_handler():
         filter_f = lambda x: x['cool'] == 0
     elif navmode == '1':
         filter_f = lambda x: x['cool'] > 1
+    elif navmode == '3':
+        filter_f = lambda x: x['text'].match('.*remote.*')
     else:
         filter_f = lambda x: x['cool'] == 1
 
