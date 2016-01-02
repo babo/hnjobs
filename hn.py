@@ -8,7 +8,8 @@ from urllib.request import urlopen
 import rethinkdb
 
 
-MAIN_ID = '10152809' # '9996333' # '9639001' # 9471287' # '9303396' # '9127232' #'8980047'
+IDS = ['10822019', '10655740', '10492086', '10311580', '10152809', '9996333', '9639001', '9471287', '9303396', '9127232', '8980047']
+MAIN_ID = IDS[0]
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
 DB_HOST = 'localhost'
 DB_PORT = 28015
