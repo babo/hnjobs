@@ -30,8 +30,6 @@ Starting the service
 
 * activate the virtualenv with `source ./bootstrap_venv/bin/activate`
 
-* set `MAIN_ID` in `hn.py` and `server.py` to the latest ID found at the [whoishiring](https://news.ycombinator.com/submitted?id=whoishiring) account.
-
 * run `./hn.py` to collect data using [firebaseio.com](http://hacker-news.firebaseio.com). This will take around 10 minutes. At the first days of the month you should run this frequently to collect the latest jobs and comments.
 
 * start the local server as `./server.py` and point your browser to `http://localhost:3000`. To run it on a different port use `env PORT=XXXX ./server.py`
