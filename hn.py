@@ -72,15 +72,15 @@ def get_all(start_id=None, seen=None):
         print('Failed', failed)
 
 def init_db():
-    c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
-
-    if 'hnjobs' not in rethinkdb.db_list().run(c):
-        x = rethinkdb.db_create('hnjobs').run(c)
+    c = rethinkdb.connect(host=DB_HOST, port=DB_PORT)
+    if DB_DATABASE not in rethinkdb.db_list().run(c):
+        x = rethinkdb.db_create(DB_DATABASE).run(c)
         if x.get('dbs_created', 0) != 1:
             raise Exception('Unable to create database')
+    c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
 
-    if MAIN_ID not in rethinkdb.db('hnjobs').table_list().run(c):
-        x = rethinkdb.db('hnjobs').table_create(MAIN_ID).run(c)
+    if DB_THREAD_IDS not in rethinkdb.table_list().run(c):
+        x = rethinkdb.table_create(DB_THREAD_IDS).run(c)
         if x.get('tables_created', 0) != 1:
             raise Exception('Unable to create table {}'.format(MAIN_ID))
 
