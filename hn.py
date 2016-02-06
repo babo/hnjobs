@@ -11,6 +11,8 @@ import rethinkdb
 IDS = ['11012044', '10822019', '10655740', '10492086', '10311580', '10152809', '9996333', '9639001', '9471287', '9303396', '9127232', '8980047']
 MAIN_ID = IDS[0]
 TEMPLATE = 'https://hacker-news.firebaseio.com/v0/item/{}.json'
+WHO_IS_HIRING = 'https://hacker-news.firebaseio.com/v0/user/whoishiring.json'
+
 DB_HOST = 'localhost'
 DB_PORT = 28015
 DB_DATABASE = 'hnjobs'
@@ -31,6 +33,16 @@ def read_firebase(hn_url):
                     raise FireBaseException(x.code)
     except Exception as error:
         print(hn_id, type(error), error)
+
+def latest_thread():
+    submitted = map(int, read_firebase(WHO_IS_HIRING)['submitted'])
+
+    # check submissions in cronological order
+    for hn_id in sorted(submitted, reverse=True):
+        post_data = read_firebase(TEMPLATE.format(hn_id))
+        if 'title' in post_data and 'Ask HN: Who is hiring?' in post_data['title']:
+            print(post_data['title'])
+            return hn_id
 
 def get_all(start_id=None, seen=None):
     ids = [start_id or MAIN_ID]
