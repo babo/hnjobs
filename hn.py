@@ -19,10 +19,10 @@ MAX_RETRIES = 5
 class FireBaseException(Exception):
     pass
 
-def read_comment(hn_id):
+def read_firebase(hn_url):
     try:
         for i in range(MAX_RETRIES + 1):
-            with closing(urlopen(TEMPLATE.format(hn_id))) as x:
+            with closing(urlopen(hn_url)) as x:
                 if x.getcode() / 100 == 5 and i < MAX_RETRIES:
                     time.sleep(0.2 * 2 ** i)
                 elif x.getcode() / 100 == 2:
@@ -43,7 +43,7 @@ def get_all(start_id=None, seen=None):
         if hn_id in seen:
             continue
 
-        data = read_comment(hn_id)
+        data = read_firebase(TEMPLATE.format(hn_id))
         seen.add(hn_id)
 
         if data is None:
