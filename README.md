@@ -6,6 +6,12 @@ Description
 
 [Ask HN: Who is hiring?](https://news.ycombinator.com/item?id=8252715) at the first day of each month at 9 AM Eastern time is a great source of jobs and trends in the startup world. Following it is quite a hassle as the UI is not designed for hundreds of posts in a single page. This application is cloning it into a local database and adds a UI to select interesting jobs and hide the unattractive ones.
 
+Requirements
+---
+
+    python3
+    virtualenv
+
 Installation
 ---
 

@@ -8,8 +8,6 @@ VENV_PATH=${1:-bootstrap_venv}
 echo "Use VENV_PATH as '${VENV_PATH}'"
 
 if [ -z "${VIRTUAL_ENV}" ]; then
-    pip install virtualenv
-
     if ! [ -d "${VENV_PATH}" ]; then
         virtualenv ${VENV_PATH}
     fi
