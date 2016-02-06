@@ -19,7 +19,6 @@ from flask import Flask, Response, request
 from hn import MAIN_ID
 
 LIMIT = 700
-#MAIN_ID = '9303396' # '9127232' #'8980047'
 DB_HOST = 'localhost'
 DB_PORT = 28015
 DB_DATABASE = 'hnjobs'
