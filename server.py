@@ -39,12 +39,15 @@ def comments_handler():
     elif navmode == '1':
         cursor = cursor.filter(rethinkdb.row['cool'].gt(1))
     elif navmode == '3':
-        cursor = cursor.filter({'cool': 1}).filter(rethinkdb.row['text'].match("(?i)remote"))
+        cursor = cursor.filter({'cool': 1}).filter(rethinkdb.row['text'].match('(?i)remote'))
     else:
         cursor = cursor.filter({'cool': 1})
 
-    cursor = cursor.with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
-    jobs = list(cursor)
+    jobfilter = request.args.get('filter', None)
+    if jobfilter:
+        cursor = cursor.filter(rethinkdb.row['text'].match(r'(?i){}'.format(jobfilter)))
+
+    jobs = list(cursor.limit(LIMIT).run(c))
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
