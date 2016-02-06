@@ -86,5 +86,8 @@ def hide_a_job_handler(jobid):
     rtv = {'success': success}
     return Response(json.dumps(rtv), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
+def main():
+    app.run(port=int(os.environ.get('PORT', 3000)), debug=True)
+
 if __name__ == '__main__':
-    app.run(port=int(os.environ.get("PORT",3000)), debug=True)
+    main()
