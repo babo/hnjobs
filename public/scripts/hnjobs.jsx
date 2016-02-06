@@ -60,7 +60,9 @@ Comment = React.createClass({
                 <div className='comment list-group-item'>
                     <div className="row">
                         <div className="col-md-11">
-                            {when.toLocaleString()}
+                            <a target="_blank" href={"https://news.ycombinator.com/item?id=" + this.props.id}>
+                                {when.toLocaleString()}
+                            </a>
                         </div>
                         <div className="col-md-1">
                             <span className="label label-info">
