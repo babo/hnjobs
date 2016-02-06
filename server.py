@@ -32,17 +32,19 @@ def comments_handler():
     c = rethinkdb.connect(host=DB_HOST, port=DB_PORT, db=DB_DATABASE)
     table = rethinkdb.table(MAIN_ID)
 
+    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'})
+
     navmode = request.args.get('navmode', '0')
     if navmode == '2':
-        filter_f = lambda x: x['cool'] == 0
+        cursor = cursor.filter({'cool': 0})
     elif navmode == '1':
-        filter_f = lambda x: x['cool'] > 1
+        cursor = cursor.filter(rethinkdb.row['cool'].gt(1))
     elif navmode == '3':
-        filter_f = lambda x: x['text'].match('.*remote.*')
+        cursor = cursor.filter({'cool': 1}).filter(rethinkdb.row['text'].match("(?i)remote"))
     else:
-        filter_f = lambda x: x['cool'] == 1
+        cursor = cursor.filter({'cool': 1})
 
-    cursor = table.filter({'parent': int(MAIN_ID), 'type': 'comment'}).filter(filter_f).with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
+    cursor = cursor.with_fields('text', 'by', 'time', 'cool', 'id').limit(LIMIT).run(c)
     jobs = list(cursor)
 
     return Response(json.dumps(jobs), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
