@@ -48,8 +48,8 @@ Comment = React.createClass({
             var rawMarkup = this.props.children.toString(),
                 when = new Date( this.props.time * 1000),
                 p = rawMarkup.indexOf('<p>'),
-                title = p === -1 ? rawMarkup : rawMarkup.substring(0, p),
-                body = p === -1 ? '' : rawMarkup.substring(p);
+                title = p === -1 ? '' : rawMarkup.substring(0, p),
+                body = p === -1 ? rawMarkup : rawMarkup.substring(p) + '</p>';
             return (
                 <div className='comment list-group-item'>
                     <div className="row">
@@ -154,7 +154,7 @@ CommentBox = React.createClass({
     }
 });
 
-React.render(
+ReactDOM.render(
     <CommentBox url='/hnjobs' />,
     document.getElementById('content')
 );
