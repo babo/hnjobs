@@ -60,9 +60,7 @@ Comment = React.createClass({
                 <div className='comment list-group-item'>
                     <div className="row">
                         <div className="col-md-11">
-                            <a target="_blank" href={"https://news.ycombinator.com/item?id=" + this.props.id}>
-                                {when.toLocaleString()}
-                            </a>
+                            {when.toLocaleString()}
                         </div>
                         <div className="col-md-1">
                             <span className="label label-info">
@@ -159,6 +157,7 @@ CommentBox = React.createClass({
                     </form>
                 </div>
 
+                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id={this.props.id}"}>HN Jobs</a></h1>
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );
