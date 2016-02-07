@@ -1,12 +1,6 @@
 var
 
 DislikeButton = React.createClass({
-    handleCommentSubmit: function (comment) {
-        var comments = this.state.data,
-            newComments = comments.concat([comment]);
-        this.setState({data: newComments});
-
-    },
     handleClick: function (tbd) {
         var url=this.props.url + '/update/' + this.props.id;
 
