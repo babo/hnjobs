@@ -2,7 +2,7 @@ Organize monthly Hacker News jobs
 ==
 
 Description
---
+---
 
 [Ask HN: Who is hiring?](https://news.ycombinator.com/item?id=8252715) at the first day of each month at 9 AM Eastern time is a great source of jobs and trends in the startup world. Following it is quite a hassle as the UI is not designed for hundreds of posts in a single page. This application is cloning it into a local database and adds a UI to select interesting jobs and hide the unattractive ones.
 
@@ -35,7 +35,17 @@ Starting the service
 * start the local server as `./server.py` and point your browser to `http://localhost:3000`. To run it on a different port use `env PORT=XXXX ./server.py`
 
 Stopping the service
---
+---
 
 * stop `server.py` with a `CTRL-C`
 * stop `rethinkdb` with a `CTRL-C`
+
+Set month or thread id manually
+---
+
+While the program selects the current month by default you can override it both for data collection and serving using command line arguments:
+
+    -y YEAR, --year YEAR
+    -m MONTH, --month MONTH
+    -t THREAD_ID, --thread THREAD_ID
+    -h, --help
