@@ -128,7 +128,6 @@ CommentBox = React.createClass({
     handleSearch: function (e) {
         e.preventDefault();
         var newFilter = e.target.searchBox.value.trim();
-        console.log("searching for jobs that match " + newFilter);
         this.setState({searchFilter: newFilter}, this.loadCommentsFromServer);
     },
     render: function () {
