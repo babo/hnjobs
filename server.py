@@ -63,15 +63,19 @@ def latest_handler():
 def hide_a_job_handler(jobid):
 
     success = False
-    if request.method == 'DELETE':
-        rtv = app.table.get(jobid).update({'cool': 0}).run(app.connection)
-        success = rtv.get('skipped', 1) == 0
-        app.logger.debug('Hide {} {}'.format(jobid, rtv))
-    elif request.method == 'POST':
-        rtv = app.table.get(jobid).update({'cool': rethinkdb.row['cool'] + 1}).run(app.connection)
-        success = rtv.get('skipped', 1) == 0
-        app.logger.debug('Updated {} {}'.format(jobid, rtv))
-    rtv = {'success': success}
+    try:
+        jobid = int(jobid)
+        if request.method == 'DELETE':
+            rtv = app.table.get(jobid).update({'cool': 0}).run(app.connection)
+            success = rtv.get('skipped', 1) == 0
+            app.logger.debug('Hide {} {}'.format(jobid, rtv))
+        elif request.method == 'POST':
+            rtv = app.table.get(jobid).update({'cool': rethinkdb.row['cool'] + 1}).run(app.connection)
+            success = rtv.get('skipped', 1) == 0
+            app.logger.debug('Updated {} {}'.format(jobid, rtv))
+        rtv = {'success': success}
+    except ValueError:
+        pass
     return Response(json.dumps(rtv), mimetype='application/json', headers={'Cache-Control': 'no-cache'})
 
 def main():
