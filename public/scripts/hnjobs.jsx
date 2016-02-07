@@ -102,11 +102,10 @@ CommentList = React.createClass({
 
 CommentBox = React.createClass({
     loadCommentsFromServer: function () {
-        var navvy = this.state.navmode;
         $.ajax({
             url: this.props.url,
             dataType: 'json',
-            data: {navmode: navvy, filter: this.state.searchFilter},
+            data: {navmode: this.state.navmode, filter: this.state.searchFilter},
             success: function (data) {
                 this.setState({data: data});
             }.bind(this),
@@ -123,10 +122,8 @@ CommentBox = React.createClass({
     },
     handleClick: function (which) {
         if (this.state.navmode !== which && which >= 0 && which < 4) {
-            this.loadCommentsFromServer(which);
+            this.setState({navmode: which}, this.loadCommentsFromServer);
         }
-        console.log("navmode will become " + which);
-        this.setState({navmode: which}, this.loadCommentsFromServer);
     },
     handleSearch: function (e) {
         e.preventDefault();
