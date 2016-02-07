@@ -65,7 +65,7 @@ def get_all(main_id, seen=None):
             failed.append(hn_id)
         else:
             if 'text' in data:
-                data['id'] = str(data['id'])
+                data['id'] = data['id']
                 yield data
 
             if 'kids' in data:
