@@ -101,7 +101,7 @@ CommentBox = React.createClass({
             dataType: 'json',
             data: {navmode: this.state.navmode, filter: this.state.searchFilter},
             success: function (data) {
-                this.setState({data: data});
+                this.setState({data: data, main_id: data && data[0].parent});
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -129,7 +129,7 @@ CommentBox = React.createClass({
             <div className='commentBox'>
                 <div className="commentsNav navbar navbar-default" role="navigation">
                     <span className="navbar-text">
-                        HN Jobs ({this.state.data.length})
+                        Jobs ({this.state.data.length})
                     </span>
                     <ul className="nav navbar-nav">
                         <li role="presentation" className={this.state.navmode === 0 ? 'active' : ''}><a onClick={this.handleClick.bind(this, 0)}>Potential</a></li>
@@ -147,7 +147,7 @@ CommentBox = React.createClass({
                     </form>
                 </div>
 
-                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id={this.props.id}"}>HN Jobs</a></h1>
+                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=" +this.state.main_id}>HN Jobs</a></h1>
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );
