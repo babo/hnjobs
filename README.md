@@ -34,11 +34,16 @@ Starting the service
 
 * start the local server as `./server.py` and point your browser to `http://localhost:3000`. To run it on a different port use `env PORT=XXXX ./server.py`
 
+You can be lazy and run all of the above in a tmux session with `scripts/run-tmux.sh`.
+
 Stopping the service
 ---
 
 * stop `server.py` with a `CTRL-C`
 * stop `rethinkdb` with a `CTRL-C`
+* stop `hn.py` with a `CTRL-C`
+
+Stopping all of the processes in tmux will also close the session automatically.
 
 Set month or thread id manually
 ---
