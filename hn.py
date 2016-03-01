@@ -132,9 +132,14 @@ def get_main_id(connection, args):
     args = check_args()
 
     if args.thread_id:
-        return validate_thread_id(connection, args.thread_id)
+        thread_id = validate_thread_id(connection, args.thread_id)
     else:
-        return get_latest_thread(connection, args.year, args.month)
+        thread_id = get_latest_thread(connection, args.year, args.month)
+    if str(thread_id) not in rethinkdb.table_list().run(connection):
+        x = rethinkdb.table_create(str(thread_id)).run(connection)
+        if x.get('tables_created', 0) != 1:
+            raise Exception('Unable to create table {}'.format(thread_id))
+    return thread_id
 
 def init_db():
     connection = rethinkdb.connect(host=DB_HOST, port=DB_PORT)
