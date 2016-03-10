@@ -47,15 +47,13 @@ def read_firebase(hn_url):
         print(hn_url, type(error), error)
         raise
 
-def get_all(main_id, seen=None):
+def get_all(main_id, seen):
     ids = [main_id]
-    seen = set(seen or []).difference(ids)
-
     failed = []
 
     while ids:
         hn_id = ids.pop()
-        if hn_id in seen:
+        if hn_id != main_id and hn_id in seen:
             continue
 
         data = read_firebase(TEMPLATE.format(hn_id))
@@ -65,7 +63,6 @@ def get_all(main_id, seen=None):
             failed.append(hn_id)
         else:
             if 'text' in data:
-                data['id'] = data['id']
                 yield data
 
             if 'kids' in data:
@@ -176,7 +173,7 @@ def main():
 
     cur = table.with_fields('id').run(connection)
     seen = set([x['id'] for x in cur])
-    for data in get_all(main_id, seen=seen):
+    for data in get_all(main_id, seen):
         jid = data['id']
         if jid not in seen:
             data['cool'] = 1
@@ -185,7 +182,7 @@ def main():
                 print('Fail to add {} {}'.format(jid, x))
             else:
                 print('new {}'.format(jid))
-        else:
+        elif jid != main_id:
             print('seen {}'.format(jid))
 
 if __name__ == '__main__':
