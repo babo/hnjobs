@@ -101,7 +101,7 @@ CommentBox = React.createClass({
             dataType: 'json',
             data: {navmode: this.state.navmode, filter: this.state.searchFilter},
             success: function (data) {
-                this.setState({data: data, main_id: data && data[0].parent});
+                this.setState({data: data, main_id: data && data.length > 0 && data[0].parent});
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -125,6 +125,10 @@ CommentBox = React.createClass({
         this.setState({searchFilter: newFilter}, this.loadCommentsFromServer);
     },
     render: function () {
+        var title = '';
+        if (this.state.main_id) {
+            title = <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=" + this.state.main_id}>HN Jobs</a></h1>;
+        }
         return (
             <div className='commentBox'>
                 <div className="commentsNav navbar navbar-default" role="navigation">
@@ -147,7 +151,7 @@ CommentBox = React.createClass({
                     </form>
                 </div>
 
-                <h1><a target="_blank" href={"https://news.ycombinator.com/item?id=" +this.state.main_id}>HN Jobs</a></h1>
+                {title}
                 <CommentList data={this.state.data} url={this.props.url} />
             </div>
         );
