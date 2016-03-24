@@ -1,9 +1,9 @@
 *.pyc
-R/
-adc/
-venv/
-v3/
-node_modules/
-.module-cache/
-bootstrap_venv/
 .DS_Store
+.module-cache/
+R/
+__pycache__/
+bootstrap_venv/
+node_modules/
+v3/
+venv/
