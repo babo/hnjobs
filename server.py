@@ -28,13 +28,13 @@ def comments_handler():
     cursor = app.table.filter({'parent': app.main_id, 'type': 'comment'})
 
     navmode = request.args.get('navmode', '0')
-    if navmode == '2':
-        cursor = cursor.filter({'cool': 0})
-    elif navmode == '1':
+    if navmode == '1':                                          # cool
         cursor = cursor.filter(rethinkdb.row['cool'].gt(1))
-    elif navmode == '3':
+    elif navmode == '2':                                        # uncool
+        cursor = cursor.filter({'cool': 0})
+    elif navmode == '3':                                        # potential remote
         cursor = cursor.filter({'cool': 1}).filter(rethinkdb.row['text'].match('(?i)remote'))
-    else:
+    else:                                                       # potential
         cursor = cursor.filter({'cool': 1})
 
     jobfilter = request.args.get('filter', None)
