@@ -57,8 +57,6 @@ def get_all(main_id, seen):
             continue
 
         data = read_firebase(TEMPLATE.format(hn_id))
-        seen.add(hn_id)
-
         if data is None:
             failed.append(hn_id)
         else:
@@ -67,6 +65,8 @@ def get_all(main_id, seen):
 
             if 'kids' in data:
                 ids += data['kids']
+
+            seen.add(hn_id)
 
     if failed:
         print('Failed', failed)
