@@ -82,8 +82,9 @@ def get_date(year=None, month=None):
             month = now.month
         when = datetime.datetime(year or now.year, month or now.month, 1, 9, 0, 0, 0, est)
     elif now.day == 1 and now.hour < 9:
-        print("It's not published yet, check back in {} hours".format(9 - now.hour))
-        when = now - datetime.timedelta(1)
+        print("It's not published yet, check back in {} hours.".format(9 - now.hour))
+        print('Retrieving last month in the meantime.')
+        when = now - datetime.timedelta(days=11)
     else:
         when = now
     return when
