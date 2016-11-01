@@ -116,6 +116,8 @@ def get_latest_thread(connection, year=None, month=None):
         # check submissions in cronological order
         for hn_id in sorted(submitted, reverse=True):
             post_data = read_firebase(TEMPLATE.format(hn_id))
+            if post_data.get('dead', False):
+                continue
             print(post_data['title'] if 'title' in post_data else post_data)
             if 'title' in post_data and monthly_title in post_data['title']:
                 thread_id = {'id': key, 'thread_id': hn_id}
